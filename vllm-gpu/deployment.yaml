@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-gpu-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-gpu
+  template:
+    metadata:
+      labels:
+        app: vllm-gpu
+    spec:
+      containers:
+      - name: vllm-gpu-container
+        image: vllm/vllm-openai:latest
+        args: ["--model", "google/gemma-2b"]
+        resources:
+          requests:
+            nvidia.com/gpu: 1
+          limits:
+            nvidia.com/gpu: 1
+      restartPolicy: Always

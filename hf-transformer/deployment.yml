@@ -1,0 +1,44 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: huggingface-transformer
+  labels:
+    app: huggingface-transformer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: huggingface-transformer
+  template:
+    metadata:
+      labels:
+        app: huggingface-transformer
+    spec:
+      containers:
+        - name: transformer
+          image: hf-transformer-demo:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MODEL_NAME
+              value: "distilbert-base-uncased"
+          resources:
+            limits:
+              nvidia.com/gpu: 1        # Request 1 GPU
+            requests:
+              memory: "4Gi"
+              cpu: "2"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: huggingface-transformer-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: huggingface-transformer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-service
+spec:
+  selector:
+    app: vllm-gpu
+  ports:
+    - port: 80
+      targetPort: 8000
